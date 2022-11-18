@@ -6,6 +6,20 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <Description>Type Scanning and Assembly Discovery Utilities</Description>
+        <Version>0.9.0</Version>
+        <Authors>Jeremy D. Miller</Authors>
+        <AssemblyName>JasperFx.TypeDiscovery</AssemblyName>
+        <PackageId>JasperFx.TypeDiscovery</PackageId>
+        <PackageProjectUrl>https://github.com/JasperFX/JasperFx.TypeDiscovery</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/JasperFX/JasperFx.TypeDiscovery/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageIconUrl>https://github.com/JasperFx/jasper/blob/master/documentation/content/banner.png?raw=true</PackageIconUrl>
+        <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+        <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+        <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+
     </PropertyGroup>
 
     <ItemGroup>

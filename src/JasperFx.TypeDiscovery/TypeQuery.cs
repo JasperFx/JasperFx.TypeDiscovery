@@ -6,7 +6,7 @@ public class TypeQuery
 
     public readonly Func<Type, bool> Filter;
 
-    public TypeQuery(TypeClassification classification, Func<Type, bool> filter = null)
+    public TypeQuery(TypeClassification classification, Func<Type, bool>? filter = null)
     {
         Filter = filter ?? (t => true);
         _classification = classification;

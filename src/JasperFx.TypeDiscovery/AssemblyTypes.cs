@@ -4,10 +4,10 @@ namespace JasperFx.TypeDiscovery;
 
 public class AssemblyScanRecord
 {
-    public Exception LoadException;
-    public string Name;
+    public Exception? LoadException;
+    public string? Name;
 
-    public override string ToString()
+    public override string? ToString()
     {
         return LoadException == null ? Name : $"{Name} (Failed)";
     }
@@ -19,7 +19,7 @@ public class AssemblyTypes
     public readonly AssemblyShelf OpenTypes = new();
 
 
-    public AssemblyTypes(Assembly assembly) : this(assembly.FullName, () => assembly.ExportedTypes)
+    public AssemblyTypes(Assembly assembly) : this(assembly.FullName!, () => assembly.ExportedTypes)
     {
     }
 
@@ -112,7 +112,7 @@ public class AssemblyTypes
 
 internal static class TypeExtensions
 {
-    public static bool IsOpenGeneric(this Type type)
+    public static bool IsOpenGeneric(this Type? type)
     {
         if (type == null)
         {

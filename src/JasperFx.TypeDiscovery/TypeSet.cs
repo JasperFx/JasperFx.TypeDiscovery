@@ -8,7 +8,7 @@ public class TypeSet
     private readonly IEnumerable<AssemblyTypes> _allTypes;
     private readonly Func<Type, bool> _filter = type => true;
 
-    public TypeSet(IEnumerable<AssemblyTypes> allTypes, Func<Type, bool> filter = null)
+    public TypeSet(IEnumerable<AssemblyTypes> allTypes, Func<Type, bool>? filter = null)
     {
         _allTypes = allTypes;
         _filter = filter ?? _filter;

@@ -24,12 +24,12 @@ public static class TypeRepository
     public static void AssertNoTypeScanningFailures()
     {
         var exceptions =
-            FailedAssemblies().Select(x => x.Record.LoadException);
+            FailedAssemblies().Select(x => x.Record.LoadException).Where(x => x != null).ToArray();
 
 
         if (exceptions.Any())
         {
-            throw new AggregateException(exceptions);
+            throw new AggregateException(exceptions!);
         }
     }
 
@@ -41,8 +41,10 @@ public static class TypeRepository
     public static IEnumerable<AssemblyTypes> FailedAssemblies()
     {
         var tasks = _assemblies.Enumerate().Select(x => x.Value).ToArray();
+        // ReSharper disable once CoVariantArrayConversion
         Task.WaitAll(tasks);
 
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         return tasks.Where(x => x.Result.Record.LoadException != null).Select(x => x.Result);
     }
 
@@ -70,7 +72,7 @@ public static class TypeRepository
     /// <param name="assemblies"></param>
     /// <param name="filter"></param>
     /// <returns></returns>
-    public static Task<TypeSet> FindTypes(IEnumerable<Assembly> assemblies, Func<Type, bool> filter = null)
+    public static Task<TypeSet> FindTypes(IEnumerable<Assembly> assemblies, Func<Type, bool>? filter = null)
     {
         var tasks = assemblies.Select(ForAssembly).ToArray();
         return Task.Factory.ContinueWhenAll(tasks,
@@ -86,7 +88,7 @@ public static class TypeRepository
     /// <param name="filter"></param>
     /// <returns></returns>
     public static Task<IEnumerable<Type>> FindTypes(IEnumerable<Assembly> assemblies,
-        TypeClassification classification, Func<Type, bool> filter = null)
+        TypeClassification classification, Func<Type, bool>? filter = null)
     {
         var query = new TypeQuery(classification, filter);
 
@@ -95,12 +97,12 @@ public static class TypeRepository
     }
 
 
-    public static Task<IEnumerable<Type>> FindTypes(Assembly assembly, TypeClassification classification,
-        Func<Type, bool> filter = null)
+    public static Task<IEnumerable<Type>> FindTypes(Assembly? assembly, TypeClassification classification,
+        Func<Type, bool>? filter = null)
     {
         if (assembly == null)
         {
-            return Task.FromResult((IEnumerable<Type>)new Type[0]);
+            return Task.FromResult((IEnumerable<Type>) Type.EmptyTypes);
         }
 
         var query = new TypeQuery(classification, filter);

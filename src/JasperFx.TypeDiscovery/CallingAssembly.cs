@@ -31,7 +31,7 @@ public class CallingAssembly
     }
 
 
-    public static Assembly Find()
+    public static Assembly? Find()
     {
         var trace = GetStackTraceInEnglish();
 
@@ -51,7 +51,7 @@ public class CallingAssembly
         return Assembly.GetEntryAssembly();
     }
 
-    private static bool isSystemAssembly(Assembly assembly)
+    private static bool isSystemAssembly(Assembly? assembly)
     {
         if (assembly == null)
         {
@@ -65,7 +65,7 @@ public class CallingAssembly
 
         var assemblyName = assembly.GetName().Name;
 
-        return isSystemAssembly(assemblyName);
+        return isSystemAssembly(assemblyName!);
     }
 
     private static bool isSystemAssembly(string assemblyName)
@@ -73,7 +73,7 @@ public class CallingAssembly
         return _prefixesToIgnore.Any(x => assemblyName.StartsWith(x));
     }
 
-    private static Assembly findAssembly(string stacktraceLine)
+    private static Assembly? findAssembly(string stacktraceLine)
     {
         var candidate = stacktraceLine.Trim().Substring(3);
 
@@ -83,7 +83,7 @@ public class CallingAssembly
             return null;
         }
 
-        Assembly assembly = null;
+        Assembly? assembly = null;
         var names = candidate.Split('.');
         for (var i = names.Length - 2; i > 0; i--)
         {
@@ -113,7 +113,7 @@ public class CallingAssembly
     /// </summary>
     /// <param name="registry"></param>
     /// <returns></returns>
-    public static Assembly DetermineApplicationAssembly(object registry)
+    public static Assembly? DetermineApplicationAssembly(object registry)
     {
         if (registry == null)
         {

@@ -8,7 +8,7 @@ internal static class BaselineAssemblyContext
 #if NET461
 		public static readonly IBaselineAssemblyLoadContext Loader = new CustomAssemblyLoadContext();
 #else
-    public static readonly IBaselineAssemblyLoadContext Loader =
+    public static readonly IJasperFxAssemblyLoadContext Loader =
         new AssemblyLoadContextWrapper(AssemblyLoadContext.Default);
 #endif
 }
@@ -22,6 +22,7 @@ public static class AssemblyFinder
     ///     Find assemblies in the application's binary path
     /// </summary>
     /// <param name="logFailure">Take an action when an assembly file could not be loaded</param>
+    /// <param name="filter">Allow list filter of assemblies to scan</param>
     /// <param name="includeExeFiles">Optionally include *.exe files</param>
     /// <returns></returns>
     public static IEnumerable<Assembly> FindAssemblies(Action<string> logFailure, Func<Assembly, bool> filter,
@@ -78,7 +79,7 @@ public static class AssemblyFinder
         foreach (var file in files)
         {
             var name = Path.GetFileNameWithoutExtension(file);
-            Assembly assembly = null;
+            Assembly? assembly = null;
 
             try
             {
@@ -108,37 +109,28 @@ public static class AssemblyFinder
     ///     Find assembly files matching a given filter
     /// </summary>
     /// <param name="filter"></param>
-    /// <param name="onDirectoryFound"></param>
     /// <param name="includeExeFiles"></param>
     /// <returns></returns>
-    public static IEnumerable<Assembly> FindAssemblies(Func<Assembly, bool> filter,
-        Action<string> onDirectoryFound = null, bool includeExeFiles = false)
+    public static IEnumerable<Assembly> FindAssemblies(Func<Assembly, bool>? filter,
+        bool includeExeFiles = false)
     {
-        if (filter == null)
-        {
-            filter = a => true;
-        }
+        filter ??= _ => true;
 
-        if (onDirectoryFound == null)
-        {
-            onDirectoryFound = dir => { };
-        }
-
-        return FindAssemblies(file => { }, filter, includeExeFiles);
+        return FindAssemblies(_ => { }, filter, includeExeFiles);
     }
 }
 
-internal interface IBaselineAssemblyLoadContext
+internal interface IJasperFxAssemblyLoadContext
 {
     Assembly LoadFromStream(Stream assembly);
     Assembly LoadFromAssemblyName(AssemblyName assemblyName);
     Assembly LoadFromAssemblyPath(string assemblyName);
 }
 
-#if !NET461
-public sealed class CustomAssemblyLoadContext : AssemblyLoadContext, IBaselineAssemblyLoadContext
+
+public sealed class CustomAssemblyLoadContext : AssemblyLoadContext, IJasperFxAssemblyLoadContext
 {
-    Assembly IBaselineAssemblyLoadContext.LoadFromAssemblyName(AssemblyName assemblyName)
+    Assembly IJasperFxAssemblyLoadContext.LoadFromAssemblyName(AssemblyName assemblyName)
     {
         return Load(assemblyName);
     }
@@ -149,91 +141,61 @@ public sealed class CustomAssemblyLoadContext : AssemblyLoadContext, IBaselineAs
     }
 }
 
-public sealed class AssemblyLoadContextWrapper : IBaselineAssemblyLoadContext
+public sealed class AssemblyLoadContextWrapper : IJasperFxAssemblyLoadContext
 {
-    private readonly AssemblyLoadContext ctx;
+    private readonly AssemblyLoadContext _ctx;
 
     public AssemblyLoadContextWrapper(AssemblyLoadContext ctx)
     {
-        this.ctx = ctx;
+        _ctx = ctx;
     }
 
     public Assembly LoadFromStream(Stream assembly)
     {
-        return ctx.LoadFromStream(assembly);
+        return _ctx.LoadFromStream(assembly);
     }
 
     public Assembly LoadFromAssemblyName(AssemblyName assemblyName)
     {
-        return ctx.LoadFromAssemblyName(assemblyName);
+        return _ctx.LoadFromAssemblyName(assemblyName);
     }
 
     public Assembly LoadFromAssemblyPath(string assemblyName)
     {
-        return ctx.LoadFromAssemblyPath(assemblyName);
+        return _ctx.LoadFromAssemblyPath(assemblyName);
     }
 }
-#else
-        public class CustomAssemblyLoadContext : IBaselineAssemblyLoadContext
-        {
-            public Assembly LoadFromStream(Stream assembly)
-            {
-                if (assembly is MemoryStream memStream)
-                {
-                    return Assembly.Load(memStream.ToArray());
-                }
 
-                using (var stream = new MemoryStream())
-                {
-                    assembly.CopyTo(stream);
-                    return Assembly.Load(stream.ToArray());
-                }
-            }
-		
-            Assembly IBaselineAssemblyLoadContext.LoadFromAssemblyName(AssemblyName assemblyName)
-            {
-                return Assembly.Load(assemblyName);
-            }
-
-            public Assembly LoadFromAssemblyPath(string assemblyName)
-            {
-                return Assembly.LoadFrom(assemblyName);
-            }
-
-            public Assembly LoadFromAssemblyName(string assemblyName)
-            {
-                return Assembly.Load(assemblyName);
-            }
-        }
-#endif
 
 internal static class TopologicalSortExtensions
 {
     /// <summary>
-    ///     Performs a topological sort on the enumeration based on dependencies
+    /// Performs a topological sort on the enumeration based on dependencies
     /// </summary>
     /// <param name="source"></param>
     /// <param name="dependencies"></param>
     /// <param name="throwOnCycle"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static IEnumerable<T> TopologicalSort<T>(this IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies,
-        bool throwOnCycle = true)
+    public static IEnumerable<T> TopologicalSort<T>(this IEnumerable<T> source, Func<T, IEnumerable<T>> dependencies, bool throwOnCycle = true)
     {
         var sorted = new List<T>();
         var visited = new HashSet<T>();
+        var visiting = new HashSet<T>();
 
-        foreach (var item in source) Visit(item, visited, sorted, dependencies, throwOnCycle);
+        foreach (var item in source)
+        {
+            Visit(item, visited, visiting, sorted, dependencies, throwOnCycle);
+        }
 
         return sorted;
     }
 
-    private static void Visit<T>(T item, ISet<T> visited, ICollection<T> sorted, Func<T, IEnumerable<T>> dependencies,
-        bool throwOnCycle)
+    private static void Visit<T>(T item, ISet<T> visited, ISet<T> visiting, ICollection<T> sorted, Func<T, IEnumerable<T>> dependencies, bool throwOnCycle)
     {
         if (visited.Contains(item))
         {
-            if (throwOnCycle && !sorted.Contains(item))
+            if (throwOnCycle && visiting.Contains(item))
             {
                 throw new Exception("Cyclic dependency found");
             }
@@ -241,10 +203,17 @@ internal static class TopologicalSortExtensions
         else
         {
             visited.Add(item);
+            visiting.Add(item);
 
-            foreach (var dep in dependencies(item)) Visit(dep, visited, sorted, dependencies, throwOnCycle);
+            foreach (var dep in dependencies(item))
+            {
+                Visit(dep, visited, visiting, sorted, dependencies, throwOnCycle);
+            }
+
+            visiting.Remove(item);
 
             sorted.Add(item);
         }
     }
+
 }

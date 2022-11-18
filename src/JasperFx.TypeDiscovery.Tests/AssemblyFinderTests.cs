@@ -8,7 +8,7 @@ public class AssemblyFinderTests
     public void find_assemblies_in_dependency_order()
     {
         var widgets =
-            AssemblyFinder.FindAssemblies(a => a.GetName().Name.StartsWith("Widget"), txt => Console.WriteLine(txt));
+            AssemblyFinder.FindAssemblies(a => a.GetName().Name.StartsWith("Widget"));
 
         var names = widgets.Select(x => x.GetName().Name).ToArray();
 
