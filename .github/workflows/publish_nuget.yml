@@ -20,7 +20,7 @@ jobs:
 
 
     - name: Build Library
-      run: dotnet build src/JasperFx.TypeDiscovery/JasperFx.TypeDiscovery.csproj --configuration Release
+      run: dotnet pack src/JasperFx.TypeDiscovery/JasperFx.TypeDiscovery.csproj --configuration Release
 
     - name: Publish JasperFx.TypeDiscovery
       uses: brandedoutcast/publish-nuget@v2.5.2
