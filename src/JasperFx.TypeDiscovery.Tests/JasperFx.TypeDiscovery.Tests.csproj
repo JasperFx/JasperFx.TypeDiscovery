@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0"/>
+        <PackageReference Include="Shouldly" Version="4.1.0"/>
+        <PackageReference Include="xunit" Version="2.4.1"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="3.1.2">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\JasperFx.TypeDiscovery\JasperFx.TypeDiscovery.csproj"/>
+        <ProjectReference Include="..\Widgets1\Widgets1.csproj"/>
+        <ProjectReference Include="..\Widgets2\Widgets2.csproj"/>
+        <ProjectReference Include="..\Widgets3\Widgets3.csproj"/>
+        <ProjectReference Include="..\Widgets4\Widgets4.csproj"/>
+        <ProjectReference Include="..\Widgets5\Widgets5.csproj"/>
+    </ItemGroup>
+
+</Project>
