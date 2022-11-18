@@ -30,4 +30,4 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Test
-      run: dotnet test --project src/JasperFx.TypeDiscovery/JasperFx.TypeDiscovery.csproj
+      run: dotnet test src/JasperFx.TypeDiscovery/JasperFx.TypeDiscovery.csproj
