@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using JasperFx.TypeDiscovery.Util;
 
 namespace JasperFx.TypeDiscovery;
 

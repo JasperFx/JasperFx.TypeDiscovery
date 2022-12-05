@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
 
         <Description>Type Scanning and Assembly Discovery Utilities</Description>
-        <Version>0.9.3</Version>
+        <Version>0.9.4</Version>
         <Authors>Jeremy D. Miller</Authors>
         <AssemblyName>JasperFx.TypeDiscovery</AssemblyName>
         <PackageId>JasperFx.TypeDiscovery</PackageId>

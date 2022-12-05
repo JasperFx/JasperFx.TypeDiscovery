@@ -25,7 +25,7 @@ THE SOFTWARE.
 
 // ReSharper disable once InconsistentNaming
 
-namespace JasperFx.TypeDiscovery
+namespace JasperFx.TypeDiscovery.Util
 {
     using System;
     using System.Collections;
@@ -37,7 +37,7 @@ namespace JasperFx.TypeDiscovery
     using System.Runtime.CompilerServices; // For [MethodImpl(AggressiveInlining)]
 
     /// <summary>Helpers for functional composition</summary>
-    public static class Fun
+    internal static class Fun
     {
         /// <summary>Always a true condition.</summary> 
         public static bool Always<T>(T _) => true;
@@ -84,14 +84,14 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Helpers for lazy instantiations</summary>
-    public static class Lazy
+    internal static class Lazy
     {
         /// <summary>Provides result type inference for creation of lazy.</summary>
         public static Lazy<T> Of<T>(Func<T> valueFactory) => new Lazy<T>(valueFactory);
     }
 
     /// <summary>Just a helper state with the number of mutable fields with the nice names ;) Maybe used together with Fold or other methods required state</summary>
-    public sealed class St<A>
+    internal sealed class St<A>
     {
         /// <summary>A</summary>
         public A a;
@@ -122,7 +122,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Just a helper state with the number of mutable fields with the nice names ;) Maybe used together with Fold or other methods required state</summary>
-    public sealed class St<A, B>
+    internal sealed class St<A, B>
     {
         /// <summary>A</summary>
         public A a;
@@ -168,7 +168,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>State factory and helper methods</summary>
-    public static class St
+    internal static class St
     {
         /// <summary>Creates the state out of the passed arguments</summary>
         [MethodImpl((MethodImplOptions)256)]
@@ -198,7 +198,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Methods to work with immutable arrays and some sugar.</summary>
-    public static class ArrayTools
+    internal static class ArrayTools
     {
         private static class EmptyArray<T>
         {
@@ -999,7 +999,7 @@ namespace JasperFx.TypeDiscovery
 
     /// <summary>Wrapper that provides optimistic-concurrency Swap operation implemented using <see cref="Ref.Swap{T}"/>.</summary>
     /// <typeparam name="T">Type of object to wrap.</typeparam>
-    public sealed class Ref<T> where T : class
+    internal sealed class Ref<T> where T : class
     {
         /// <summary>Gets the wrapped value.</summary>
         public T Value => _value;
@@ -1057,7 +1057,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Provides optimistic-concurrency consistent <see cref="Swap{T}"/> operation.</summary>
-    public static class Ref
+    internal static class Ref
     {
         /// The default max retry count - can be overridden by `Swap` optional parameter 
         public const int RETRY_COUNT_UNTIL_THROW = 50;
@@ -1231,14 +1231,14 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Printable thing via provided printer </summary>
-    public interface IPrintable
+    internal interface IPrintable
     {
         /// <summary>Print to the provided string builder via the provided printer.</summary>
         StringBuilder Print(StringBuilder s, Func<StringBuilder, object, StringBuilder> printer);
     }
 
     /// <summary>Produces good enough hash codes for the fields</summary>
-    public static class Hasher
+    internal static class Hasher
     {
         /// <summary>Combines hashes of two fields</summary>
         public static int Combine<T1, T2>(T1 a, T2 b)
@@ -1262,7 +1262,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     ///<summary>Simple unbounded object pool</summary>
-    public sealed class StackPool<T> where T : class
+    internal sealed class StackPool<T> where T : class
     {
         /// <summary>Give me an object</summary>
         [MethodImpl((MethodImplOptions)256)]
@@ -1283,7 +1283,7 @@ namespace JasperFx.TypeDiscovery
 
     /// <summary>A pool of small arrays of increasing length from 1 to `MaxArrayLength`.
     /// It may be useful to store types or objects for reflection calls.</summary>
-    public struct SmallArrayPool<T>
+    internal struct SmallArrayPool<T>
     {
         /// <summary>The max length of array and the number of arrays that can be rented from the pool</summary>
         public const byte MaxArrayLength = 7;
@@ -1321,7 +1321,7 @@ namespace JasperFx.TypeDiscovery
     /// which is different from System value type <see cref="KeyValuePair{TKey,TValue}"/>.
     /// In addition provides <see cref="Equals"/> and <see cref="GetHashCode"/> implementations.</summary>
     /// <typeparam name="K">Type of Key.</typeparam><typeparam name="V">Type of Value.</typeparam>
-    public class KV<K, V> : IPrintable
+    internal class KV<K, V> : IPrintable
     {
         /// <summary>Key.</summary>
         public readonly K Key;
@@ -1361,7 +1361,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Helpers for <see cref="KV{K,V}"/>.</summary>
-    public static class KV
+    internal static class KV
     {
         /// <summary>Creates the key value pair.</summary>
         public static KV<K, V> Of<K, V>(K key, V value) => new KV<K, V>(key, value);
@@ -1371,14 +1371,14 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// Simple helper for creation of the pair of two parts.
-    public static class KeyValuePair
+    internal static class KeyValuePair
     {
         /// Pairs key with value.
         public static KeyValuePair<K, V> Pair<K, V>(this K key, V value) => new KeyValuePair<K, V>(key, value);
     }
 
     /// <summary>Helper structure which allows to distinguish null value from the default value for optional parameter.</summary>
-    public struct Opt<T>
+    internal struct Opt<T>
     {
         /// <summary>Allows to transparently convert parameter argument to opt structure.</summary>
         public static implicit operator Opt<T>(T value) => new Opt<T>(value);
@@ -1401,7 +1401,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Ever growing list methods</summary>
-    public static class GrowingList
+    internal static class GrowingList
     {
         /// <summary>Default initial capacity </summary>
         public const int DefaultInitialCapacity = 2;
@@ -1452,7 +1452,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Ever growing list</summary>
-    public struct GrowingList<T>
+    internal struct GrowingList<T>
     {
         /// <summary>Default initial capacity </summary>
         public const int DefaultInitialCapacity = 2;
@@ -1511,7 +1511,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Immutable list - simplest linked list with the Head and the Tail.</summary>
-    public sealed class ImList<T>
+    internal sealed class ImList<T>
     {
         /// <summary>Empty list to Push to.</summary>
         public static readonly ImList<T> Empty = new ImList<T>();
@@ -1554,7 +1554,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Extension methods providing basic operations on a list.</summary>
-    public static class ImList
+    internal static class ImList
     {
         /// Split list into (Head, Tail, IsEmpty) tuple
         public static void Deconstruct<T>(this ImList<T> list, out T head, out ImList<T> tail, out bool isEmpty)
@@ -1666,7 +1666,7 @@ namespace JasperFx.TypeDiscovery
     /// Zipper is an immutable persistent data structure, to represent collection with single focused (selected, active) element.
     /// Consist of REVERSED `Left` immutable list, `Focus` element, and the `Right` immutable list. That's why a Zipper name,
     /// where left and right part are joined / zipped in focus item.
-    public sealed class ImZipper<T>
+    internal sealed class ImZipper<T>
     {
         /// Empty singleton instance to start building your zipper
         public static readonly ImZipper<T> Empty = new ImZipper<T>();
@@ -1763,7 +1763,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// Other ImZipper methods
-    public static class ImZipper
+    internal static class ImZipper
     {
         /// Appends array items to zipper
         public static ImZipper<T> Zip<T>(params T[] items)
@@ -1853,13 +1853,13 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// Given the old value should and the new value should return result updated value.
-    public delegate V Update<V>(V oldValue, V newValue);
+    internal delegate V Update<V>(V oldValue, V newValue);
 
     /// Update handler including the key
-    public delegate V Update<K, V>(K key, V oldValue, V newValue);
+    internal delegate V Update<K, V>(K key, V oldValue, V newValue);
 
     /// <summary>Entry containing the Value in addition to the Hash</summary>
-    public abstract class ImHashMapEntry<K, V> : ImHashMap<K, V>.Entry
+    internal abstract class ImHashMapEntry<K, V> : ImHashMap<K, V>.Entry
     {
         /// <summary>The value. Maybe modified if you need the Ref{Value} semantics. 
         /// You may add the entry with the default Value to the map, and calculate and set it later (e.g. using the CAS).</summary>
@@ -1886,7 +1886,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Entry containing the Value in addition to the Hash</summary>
-    public sealed class VEntry<V> : ImHashMapEntry<int, V>
+    internal sealed class VEntry<V> : ImHashMapEntry<int, V>
     {
         /// <summary>The Key is actually the Hash for this entry and the vice versa.</summary>
         public override int Key => Hash;
@@ -1925,7 +1925,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Entry containing the Key and Value in addition to the Hash</summary>
-    public sealed class KVEntry<K, V> : ImHashMapEntry<K, V>
+    internal sealed class KVEntry<K, V> : ImHashMapEntry<K, V>
     {
         /// <summary>The key</summary>
         public override K Key => _key;
@@ -2048,7 +2048,7 @@ namespace JasperFx.TypeDiscovery
 
     /// <summary>The base and the holder class for the map tree leafs and branches, also defines the Empty tree.
     /// The map implementation is based on the "modified" 2-3 tree.</summary>
-    public class ImHashMap<K, V>
+    internal class ImHashMap<K, V>
     {
         /// <summary>Hide the base constructor to prevent the multiple Empty trees creation</summary>
         protected ImHashMap() { }
@@ -2120,10 +2120,10 @@ namespace JasperFx.TypeDiscovery
         internal virtual ImHashMap<K, V> AddOrKeepWithTheSameHashByReferenceEquals(ImHashMap<K, V> oldMap, ImHashMapEntry<K, V> newEntry) => this;
 
         /// <summary>The delegate is supposed to return entry different from the oldEntry to update, and return the oldEntry to keep it.</summary>
-        public delegate ImHashMapEntry<K, V> UpdaterInPlaceOrKeeper<S>(S state, ImHashMapEntry<K, V> oldEntry, ImHashMapEntry<K, V> newEntry);
+        internal delegate ImHashMapEntry<K, V> UpdaterInPlaceOrKeeper<S>(S state, ImHashMapEntry<K, V> oldEntry, ImHashMapEntry<K, V> newEntry);
 
         /// <summary>The base map entry for holding the Hash (or int key)</summary>
-        public abstract class Entry : ImHashMap<K, V>
+        internal abstract class Entry : ImHashMap<K, V>
         {
             /// <summary>The Hash</summary>
             public readonly int Hash;
@@ -4080,7 +4080,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Helper stack wrapper for the array</summary>
-    public sealed class MapParentStack
+    internal sealed class MapParentStack
     {
         private const int DefaultInitialCapacity = 4;
         private object[] _items;
@@ -4109,10 +4109,10 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>Helper stack wrapper for the array</summary>
-    public sealed class MapParentStack<K, V>
+    internal sealed class MapParentStack<K, V>
     {
         /// <summary>Entry in a stack</summary>
-        public struct Entry
+        internal struct Entry
         {
             /// <summary>The next entry to traverse</summary>
             public ImHashMap<K, V>.Entry NextEntry;
@@ -4148,7 +4148,7 @@ namespace JasperFx.TypeDiscovery
     }
 
     /// <summary>The map methods</summary>
-    public static class ImHashMap
+    internal static class ImHashMap
     {
         /// <summary>Outputs the map as the Mermaid top-down graph</summary>
         public static string ToMermaidString<K, V>(this ImHashMap<K, V> map) =>
@@ -4381,7 +4381,7 @@ namespace JasperFx.TypeDiscovery
         }
 
         /// <summary>Non-allocating enumerator</summary>
-        public struct Enumerable<V> : IEnumerable<VEntry<V>>, IEnumerable
+        internal struct Enumerable<V> : IEnumerable<VEntry<V>>, IEnumerable
         {
             private readonly ImHashMap<int, V> _map;
             /// <summary>Constructor</summary>
@@ -4394,7 +4394,7 @@ namespace JasperFx.TypeDiscovery
         }
 
         /// <summary>Enumerator on stack, without allocation</summary>
-        public struct Enumerator<V> : IEnumerator<VEntry<V>>, IDisposable, IEnumerator
+        internal struct Enumerator<V> : IEnumerator<VEntry<V>>, IDisposable, IEnumerator
         {
             internal ImHashMap<int, V> _map;
             private short _state;
@@ -4667,7 +4667,7 @@ namespace JasperFx.TypeDiscovery
         }
 
         /// <summary>Non-allocating enumerator</summary>
-        public struct Enumerable<K, V> : IEnumerable<KVEntry<K, V>>, IEnumerable
+        internal struct Enumerable<K, V> : IEnumerable<KVEntry<K, V>>, IEnumerable
         {
             private readonly ImHashMap<K, V> _map;
             /// <summary>Constructor</summary>
@@ -4680,7 +4680,7 @@ namespace JasperFx.TypeDiscovery
         }
 
         /// <summary>Enumerator on stack, without allocation</summary>
-        public struct Enumerator<K, V> : IEnumerator<KVEntry<K, V>>, IDisposable, IEnumerator
+        internal struct Enumerator<K, V> : IEnumerator<KVEntry<K, V>>, IDisposable, IEnumerator
         {
             internal ImHashMap<K, V> _map;
             private short _state;
@@ -6045,7 +6045,7 @@ namespace JasperFx.TypeDiscovery
     /// The number of partitions may be specified by user or you can use the default number 16.
     /// The default number 16 was selected to be not so big to pay for the few items and not so small to diminish the use of partitions.
     /// </summary>
-    public static class PartitionedHashMap
+    internal static class PartitionedHashMap
     {
         /// <summary>The default number of partitions</summary>
         public const int PARTITION_COUNT_POWER_OF_TWO = 16;
@@ -6257,7 +6257,7 @@ namespace JasperFx.TypeDiscovery
         public static Enumerable<V> Enumerate<V>(this ImHashMap<int, V>[] parts) => new Enumerable<V>(parts);
 
         /// <summary>Non-allocating enumerator</summary>
-        public struct Enumerable<V> : IEnumerable<VEntry<V>>, IEnumerable
+        internal struct Enumerable<V> : IEnumerable<VEntry<V>>, IEnumerable
         {
             private readonly ImHashMap<int, V>[] _maps;
             /// <summary>Constructor</summary>
@@ -6270,7 +6270,7 @@ namespace JasperFx.TypeDiscovery
         }
 
         /// <summary>Enumerator on stack, without allocation</summary>
-        public struct Enumerator<V> : IEnumerator<VEntry<V>>, IDisposable, IEnumerator
+        internal struct Enumerator<V> : IEnumerator<VEntry<V>>, IDisposable, IEnumerator
         {
             internal ImHashMap<int, V>[] _maps;
             private bool _mapEnumerationInProgress;
@@ -6320,7 +6320,7 @@ namespace JasperFx.TypeDiscovery
         public static Enumerable<K, V> Enumerate<K, V>(this ImHashMap<K, V>[] parts) => new Enumerable<K, V>(parts);
 
         /// <summary>Non-allocating enumerator</summary>
-        public struct Enumerable<K, V> : IEnumerable<KVEntry<K, V>>, IEnumerable
+        internal struct Enumerable<K, V> : IEnumerable<KVEntry<K, V>>, IEnumerable
         {
             private readonly ImHashMap<K, V>[] _maps;
             /// <summary>Constructor</summary>
@@ -6332,7 +6332,7 @@ namespace JasperFx.TypeDiscovery
         }
 
         /// <summary>Enumerator on stack, without allocation</summary>
-        public struct Enumerator<K, V> : IEnumerator<KVEntry<K, V>>, IDisposable, IEnumerator
+        internal struct Enumerator<K, V> : IEnumerator<KVEntry<K, V>>, IDisposable, IEnumerator
         {
             internal ImHashMap<K, V>[] _maps;
             private bool _mapEnumerationInProgress;
