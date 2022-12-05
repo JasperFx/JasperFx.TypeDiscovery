@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
 
         <Description>Type Scanning and Assembly Discovery Utilities</Description>
-        <Version>0.9.2</Version>
+        <Version>0.9.3</Version>
         <Authors>Jeremy D. Miller</Authors>
         <AssemblyName>JasperFx.TypeDiscovery</AssemblyName>
         <PackageId>JasperFx.TypeDiscovery</PackageId>
@@ -19,9 +19,5 @@
         <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
 
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="ImTools.dll" Version="4.0.0" />
-    </ItemGroup>
 
 </Project>
