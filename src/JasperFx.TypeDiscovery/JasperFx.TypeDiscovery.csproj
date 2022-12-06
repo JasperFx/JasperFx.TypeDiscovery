@@ -12,7 +12,7 @@
         <PackageId>JasperFx.TypeDiscovery</PackageId>
         <PackageProjectUrl>https://github.com/JasperFX/JasperFx.TypeDiscovery</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/JasperFX/JasperFx.TypeDiscovery/blob/master/LICENSE</PackageLicenseUrl>
-        <PackageIcon>jasper_icon.png</PackageIcon>
+        <PackageIcon>jasper-icon.png</PackageIcon>
         <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
         <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
         <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
